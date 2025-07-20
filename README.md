@@ -1,61 +1,119 @@
 # MCP arXiv Server
 
-A backend service for searching and managing arXiv research paper information, designed for easy deployment and integration. This project is suitable for both developers and users who want a reliable way to interact with arXiv data programmatically or via web endpoints.
+A FastMCP-based backend service for searching, organizing, and managing arXiv research papers. This project provides a simple interface to search for academic papers, store their metadata, and retrieve them by topic or paper ID.
 
 ## What is this project?
-This server lets you search for research papers on arXiv, organize results by topic, and access them through modern web APIs. It supports real-time updates via Server-Sent Events (SSE) and is compatible with the Model Context Protocol (MCP) for advanced integrations.
+This server provides programmatic access to arXiv papers through a set of MCP-compatible tools. It allows you to:
+- Search for papers on any topic
+- Store paper metadata locally
+- Retrieve papers by topic or ID
+- Generate structured search prompts for AI assistance
 
 ## How does it work?
-- **Built with Python 3.11+** for reliability and modern features.
-- **FastAPI** handles web/API routes (like the homepage and docs).
-- **FastMCP** provides the MCP protocol and SSE endpoint for real-time communication.
-- **Dependencies** are managed with `pyproject.toml` and locked for reproducibility with `uv.lock`.
-- **Dockerfile** makes deployment on platforms like Render.com simple and consistent.
+- Built with **Python 3.10+** for reliability and modern features
+- Uses the official **arxiv** Python package for searching arXiv
+- **FastMCP** provides the MCP protocol and web interface
+- Dependencies are managed with `pyproject.toml` and locked with `uv.lock`
+- Paper metadata is stored in JSON files organized by topic
 
 ## Main Features
-- Search arXiv for papers by topic (using the official arxiv Python package)
-- Save and retrieve paper metadata in organized folders
-- Real-time updates and communication via `/sse` endpoint
-- Clear, friendly homepage at `/` for info and documentation
-- Exposes MCP-compatible tools for automation or integration
+- **Paper Search**: Search arXiv for papers by topic with customizable result limits
+- **Metadata Management**: Automatically store and organize paper metadata by topic
+- **Topic-based Organization**: Easily browse papers by their research topics
+- **MCP Integration**: Exposes tools through the Model Context Protocol
+- **Simple Storage**: Uses JSON files for easy inspection and backup
 
-## API Endpoints (What can you call?)
-- `GET /` — Homepage with project info (HTML)
-- `GET /sse` — Real-time SSE endpoint for MCP clients
-- **MCP Tools (auto-exposed as API calls):**
-  - `search_papers(topic: str, max_results: int = 5)` — Search and store papers
-  - `extract_info(paper_id: str)` — Get info for a specific paper
-  - `get_available_folders()` — List all topic folders
-  - `get_topic_papers(topic: str)` — Get all papers for a topic
-  - `generate_search_prompt(topic: str, num_papers: int = 5)` — Generate a search prompt for AI tools
+## Available MCP Tools
 
-## Project Structure (What's in the repo?)
+The server exposes the following tools through the MCP protocol:
+
+### `search_papers(topic: str, max_results: int = 5) -> List[str]`
+Search arXiv for papers on a specific topic and store their metadata.
+- `topic`: The research topic to search for
+- `max_results`: Maximum number of results to return (default: 5)
+- Returns: List of paper IDs found in the search
+
+### `extract_info(paper_id: str) -> str`
+Retrieve information about a specific paper by its ID.
+- `paper_id`: The arXiv paper ID to look up
+- Returns: JSON string with paper details or error message
+
+### `get_available_folders() -> str`
+List all available topic folders containing saved papers.
+- Returns: Markdown-formatted list of topics
+
+### `get_topic_papers(topic: str) -> str`
+Get detailed information about all papers for a specific topic.
+- `topic`: The research topic to retrieve papers for
+- Returns: Formatted markdown with paper details
+
+### `generate_search_prompt(topic: str, num_papers: int = 5) -> str`
+Generate a structured prompt for searching and analyzing papers.
+- `topic`: The research topic
+- `num_papers`: Number of papers to include in the prompt (default: 5)
+- Returns: Formatted prompt text
+
+## Project Structure
+
 ```
 .
-├── Dockerfile         # Container build instructions
-├── LICENSE            # Project license (MIT)
 ├── README.md          # This documentation file
-├── main.py            # Simple test script
-├── pyproject.toml     # Dependency definitions
-├── research_server.py # Main server code
+├── pyproject.toml     # Project metadata and dependencies
+├── research_server.py # Main server implementation
 ├── uv.lock            # Locked dependency versions
+└── papers/            # Directory for storing paper metadata
+    └── {topic}/       # Each topic gets its own directory
+        └── papers_info.json  # Paper metadata for the topic
 ```
 
-## How to Deploy (on Render.com)
-1. **Push your code to GitHub** (include Dockerfile and all lock files).
-2. **Create a new Web Service on Render.com:**
-   - Select your GitHub repo
-   - Render will auto-detect the Dockerfile
-   - Set the environment port to `8001`
-   - Click Deploy
-3. **Access your service:**
-   - Homepage: `https://<your-app-name>.onrender.com/`
-   - SSE endpoint: `https://<your-app-name>.onrender.com/sse`
+## Getting Started
+
+### Prerequisites
+- Python 3.10 or higher
+- pip (Python package manager)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/stackupdev/mcp-arXiv-server.git
+   cd mcp-arXiv-server
+   ```
+
+2. Install dependencies using `uv` (recommended):
+   ```bash
+   uv pip install -e .
+   ```
+   Or using pip:
+   ```bash
+   pip install -e .
+   ```
+
+### Running the Server
+
+Start the server with:
+```bash
+python research_server.py
+```
+
+The server will start on port 8001 by default. You can now connect to it using any MCP-compatible client.
 
 ## Managing Dependencies
-- All dependencies are listed in `pyproject.toml` and locked in `uv.lock`.
-- To add or update dependencies, use `uv pip install ...` and regenerate `uv.lock`.
-- FastAPI and FastMCP are required for the API and SSE functionality.
+
+Dependencies are managed using `pyproject.toml` and `uv.lock`:
+
+- To add a new dependency:
+  ```bash
+  uv pip install <package>
+  uv pip compile --output-file=uv.lock
+  ```
+
+- To update all dependencies:
+  ```bash
+  uv pip install --upgrade -e .
+  uv pip compile --upgrade --output-file=uv.lock
+  ```
 
 ## License
-This project is licensed under the [MIT License](./LICENSE) © 2025 The C Foundation.
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
