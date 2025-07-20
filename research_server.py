@@ -28,7 +28,7 @@ def homepage():
     """
 
 # Initialize FastMCP server (no port/app here)
-mcp = FastMCP("research")
+mcp = FastMCP("research", transport='sse')
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
