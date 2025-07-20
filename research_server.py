@@ -10,13 +10,13 @@ PAPER_DIR = "papers"
 mcp = FastMCP("research", port=8001)
 
 @mcp.tool()
-def search_papers(topic: str, max_results: int = 5) -> List[str]:
+def search_papers(topic: str, max_results: int = 10) -> List[str]:
     """
     Search for papers on arXiv based on a topic and store their information.
     
     Args:
         topic: The topic to search for
-        max_results: Maximum number of results to retrieve (default: 5)
+        max_results: Maximum number of results to retrieve (default: 10)
         
     Returns:
         List of paper IDs found in the search
@@ -155,7 +155,7 @@ def get_topic_papers(topic: str) -> str:
             content += f"- **Authors**: {', '.join(paper_info['authors'])}\n"
             content += f"- **Published**: {paper_info['published']}\n"
             content += f"- **PDF URL**: [{paper_info['pdf_url']}]({paper_info['pdf_url']})\n\n"
-            content += f"### Summary\n{paper_info['summary'][:500]}...\n\n"
+            content += f"### Summary\n{paper_info['summary'][:5000]}...\n\n"
             content += "---\n\n"
         
         return content
@@ -163,7 +163,7 @@ def get_topic_papers(topic: str) -> str:
         return f"# Error reading papers data for {topic}\n\nThe papers data file is corrupted."
 
 @mcp.prompt()
-def generate_search_prompt(topic: str, num_papers: int = 5) -> str:
+def generate_search_prompt(topic: str, num_papers: int = 10) -> str:
     """Generate a prompt for Claude to find and discuss academic papers on a specific topic."""
     return f"""Search for {num_papers} academic papers about '{topic}' using the search_papers tool. 
 
