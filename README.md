@@ -1,40 +1,63 @@
-# Welcome to the MCP arXiv Server!
+# MCP arXiv Server
 
-This project helps you search for and organize research papers from arXiv with just a few clicks. It’s designed to be simple, friendly, and easy to use online.
+## Overview
+MCP arXiv Server is a backend service for searching, storing, and managing arXiv research paper metadata. It exposes a set of API endpoints compatible with the Model Context Protocol (MCP) and provides real-time communication via Server-Sent Events (SSE). The server is designed for deployment on Render.com as a containerized web service.
 
-## What does this site do?
-- Lets you search for research papers on any topic from arXiv.
-- Saves and organizes the papers you find, so you can look them up later.
-- Shows a friendly homepage when you visit the main website.
-- Works with special tools that use the "MCP" protocol for advanced users.
+## Architecture
+- **Language:** Python 3.11+
+- **Frameworks:** FastAPI (for HTTP routes), FastMCP (for MCP protocol/SSE)
+- **Dependency Management:** [uv](https://github.com/astral-sh/uv) with `pyproject.toml` and `uv.lock`
+- **Containerization:** Dockerfile provided for reproducible builds
 
-## How do I use it?
-You can put this project online using [Render.com](https://render.com/):
-1. Upload your code to GitHub.
-2. On Render.com, create a new "Web Service" and connect your GitHub.
-3. Render.com will set everything up for you—just make sure the port is set to `8001`.
-4. When it’s ready, visit your new website link (like `https://your-app-name.onrender.com/`).
+## Features
+- Search arXiv for papers by topic (using the `arxiv` Python package)
+- Store and retrieve paper metadata in topic-based directories
+- Expose MCP-compatible tools for integration with MCP clients
+- Real-time updates and communication via `/sse` endpoint (SSE transport)
+- FastAPI-powered homepage at `/` for project info and documentation
 
-## What will I see?
-- **Homepage (`/`)**: A welcome page that explains what the project does.
-- **/sse**: A special page for connecting with other tools (you can ignore this unless you know you need it).
+## API Endpoints
+- `GET /` — HTML homepage with project info
+- `GET /sse` — SSE endpoint for MCP protocol clients
+- **MCP Tools (auto-exposed):**
+  - `search_papers(topic: str, max_results: int = 5) -> List[str]`
+  - `extract_info(paper_id: str)`
+  - `get_available_folders()`
+  - `get_topic_papers(topic: str)`
+  - `generate_search_prompt(topic: str, num_papers: int = 5)`
 
-## What happens when I search for papers?
-When you use the search feature (through the MCP protocol or connected tools), the server will:
-- Look up the latest papers from arXiv on your chosen topic
-- Save the results so you can find them again later
-- Let you view info about each paper, like title, authors, summary, and download link
+## File Structure
+```
+.
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── main.py
+├── pyproject.toml
+├── research_server.py
+├── uv.lock
+```
+- `research_server.py`: Main application entry point, defines FastAPI app and MCP tools
+- `pyproject.toml`/`uv.lock`: Dependency definitions and locking
+- `Dockerfile`: Build instructions for container deployment
+- `main.py`: Simple script for testing environment
+- `LICENSE`: [MIT License](./LICENSE)
 
-## Project files
-- `research_server.py`: The main code that runs the server
-- `pyproject.toml` and `uv.lock`: These keep track of which packages are needed
-- `README.md`: This guide
+## Deployment (Render.com)
+1. **Push to GitHub:** Ensure your repository contains all project files, including Dockerfile and lock files.
+2. **Create Render.com Web Service:**
+   - Select your GitHub repo
+   - Render will detect and use the Dockerfile automatically
+   - Set the environment port to `8001`
+   - Deploy
+3. **Access:**
+   - Homepage: `https://<your-app-name>.onrender.com/`
+   - SSE endpoint: `https://<your-app-name>.onrender.com/sse`
 
-## Need help?
-If you’re stuck or have questions, ask the person who shared this project with you, or check the code for more details.
+## Dependency Management
+- All Python dependencies are listed in `pyproject.toml` and locked in `uv.lock`.
+- To update dependencies, use `uv pip install ...` and regenerate `uv.lock`.
+- FastAPI and FastMCP are required for API and protocol functionality.
 
----
-
-Enjoy exploring research papers with MCP arXiv Server!
 ## License
-MIT (or specify your license)
+This project is licensed under the [MIT License](./LICENSE) (c) 2025 The C Foundation.

@@ -26,8 +26,17 @@ def homepage():
         </body>
     </html>
     """
-# Initialize FastMCP server
-mcp = FastMCP("research", port=8001, app=app)
+
+# Initialize FastMCP server (no port/app here)
+mcp = FastMCP("research")
+
+# Mount the MCP ASGI app at /sse
+app.mount("/sse", mcp.asgi_app)
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8001))
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
