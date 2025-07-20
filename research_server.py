@@ -28,8 +28,21 @@ PAPER_DIR = "papers"
 # Get port from environment variable or use default 8001 for local development
 PORT = int(os.environ.get('PORT', 8001))
 
-# Initialize FastMCP server with the custom FastAPI app
-mcp = FastMCP("research", port=PORT, app=custom_app)
+# Initialize FastMCP with the custom FastAPI app
+mcp = FastMCP(
+    "research",
+    port=PORT,
+    app=custom_app,
+    transport='sse'  # Explicitly enable SSE transport
+)
+
+# Mount the MCP app at /mcp
+custom_app.mount("/mcp", mcp.app)
+
+# Add SSE endpoint
+@custom_app.get("/sse")
+async def sse_endpoint():
+    return await mcp.app.handle_sse()
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
@@ -211,6 +224,7 @@ def generate_search_prompt(topic: str, num_papers: int = 5) -> str:
     Please present both detailed information about each paper and a high-level synthesis of the research landscape in {topic}."""
 
 if __name__ == "__main__":
+    import uvicorn
     # Run the server
     uvicorn.run(
         "research_server:custom_app",
