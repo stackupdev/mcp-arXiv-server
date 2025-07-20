@@ -28,21 +28,17 @@ PAPER_DIR = "papers"
 # Get port from environment variable or use default 8001 for local development
 PORT = int(os.environ.get('PORT', 8001))
 
-# Initialize FastMCP with the custom FastAPI app
-mcp = FastMCP(
-    "research",
-    port=PORT,
-    app=custom_app,
-    transport='sse'  # Explicitly enable SSE transport
-)
+# Initialize FastMCP with SSE transport
+mcp = FastMCP("research", transport='sse')
 
-# Mount the MCP app at /mcp
-custom_app.mount("/mcp", mcp.app)
-
-# Add SSE endpoint
+# Add SSE endpoint directly to the custom app
 @custom_app.get("/sse")
 async def sse_endpoint():
-    return await mcp.app.handle_sse()
+    return await mcp._handle_sse()
+
+# Add MCP tools to the custom app
+for route in mcp.app.routes:
+    custom_app.router.routes.append(route)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
