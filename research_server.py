@@ -31,7 +31,7 @@ def homepage():
 mcp = FastMCP("research")
 
 # Mount the MCP SSE ASGI app at /sse
-app.mount("/sse", mcp.sse_app)
+app.mount("/sse", mcp.sse_app())
 
 if __name__ == "__main__":
     import uvicorn
