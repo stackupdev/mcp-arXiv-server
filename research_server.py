@@ -3,32 +3,11 @@ import json
 import os
 from typing import List
 from mcp.server.fastmcp import FastMCP
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
 
 PAPER_DIR = "papers"
 
-# Create FastAPI app
-app = FastAPI()
-
-@app.get("/", response_class=HTMLResponse)
-def homepage():
-    return """
-    <html>
-        <head><title>MCP arXiv Server</title></head>
-        <body>
-            <h1>Welcome to the MCP arXiv Server!</h1>
-            <p>This is a backend API for arXiv search and paper management via the MCP protocol.</p>
-            <ul>
-                <li>To connect via SSE, use the <a href="/sse/">/sse endpoint</a>.</li>
-                <li>See project documentation in <a href="https://github.com/stackupdev/mcp-arXiv-server/blob/main/README.md" target="_blank">README.md</a>.</li>
-            </ul>
-        </body>
-    </html>
-    """
-
-# Initialize FastMCP server (no port/app here)
-mcp = FastMCP("research", transport='sse')
+# Initialize FastMCP server
+mcp = FastMCP("research", port=8001)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
@@ -116,6 +95,8 @@ def extract_info(paper_id: str) -> str:
                     continue
     
     return f"There's no saved information related to paper {paper_id}."
+
+
 
 @mcp.resource("papers://folders")
 def get_available_folders() -> str:
@@ -207,16 +188,6 @@ def generate_search_prompt(topic: str, num_papers: int = 5) -> str:
     
     Please present both detailed information about each paper and a high-level synthesis of the research landscape in {topic}."""
 
-# Mount the MCP SSE ASGI app at /sse/
-app.mount("/sse/", mcp.sse_app())
-
-from fastapi.responses import RedirectResponse
-
-@app.get("/sse")
-async def redirect_sse_no_slash():
-    return RedirectResponse(url="/sse/")
-
 if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8001))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    # Initialize and run the server
+    mcp.run(transport='sse')
