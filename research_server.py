@@ -3,11 +3,31 @@ import json
 import os
 from typing import List
 from mcp.server.fastmcp import FastMCP
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
 PAPER_DIR = "papers"
 
+# Create FastAPI app
+app = FastAPI()
+
+@app.get("/", response_class=HTMLResponse)
+def homepage():
+    return """
+    <html>
+        <head><title>MCP arXiv Server</title></head>
+        <body>
+            <h1>Welcome to the MCP arXiv Server!</h1>
+            <p>This is a backend API for arXiv search and paper management via the MCP protocol.</p>
+            <ul>
+                <li>To connect via SSE, use the <code>/sse</code> endpoint.</li>
+                <li>See project documentation in <code>README.md</code> or contact the maintainer for more info.</li>
+            </ul>
+        </body>
+    </html>
+    """
 # Initialize FastMCP server
-mcp = FastMCP("research", port=8001)
+mcp = FastMCP("research", port=8001, app=app)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
