@@ -5,6 +5,7 @@ from typing import List
 from mcp.server.fastmcp import FastMCP
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+import uvicorn
 
 # Create a FastAPI app for custom routes
 custom_app = FastAPI()
@@ -24,8 +25,11 @@ def homepage():
 
 PAPER_DIR = "papers"
 
-# Initialize FastMCP server
-mcp = FastMCP("research", port=8001, app=custom_app)
+# Get port from environment variable or use default 8001 for local development
+PORT = int(os.environ.get('PORT', 8001))
+
+# Initialize FastMCP server with the custom FastAPI app
+mcp = FastMCP("research", port=PORT, app=custom_app)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
@@ -207,5 +211,11 @@ def generate_search_prompt(topic: str, num_papers: int = 5) -> str:
     Please present both detailed information about each paper and a high-level synthesis of the research landscape in {topic}."""
 
 if __name__ == "__main__":
-    # Initialize and run the server
-    mcp.run(transport='sse')
+    # Run the server
+    uvicorn.run(
+        "research_server:custom_app",
+        host="0.0.0.0",
+        port=PORT,
+        reload=False,
+        workers=1
+    )
