@@ -30,14 +30,14 @@ def homepage():
 # Initialize FastMCP server (no port/app here)
 mcp = FastMCP("research")
 
-# Mount the MCP SSE ASGI app at /sse
-app.mount("/sse", mcp.sse_app())
+# Mount the MCP SSE ASGI app at /sse/
+app.mount("/sse/", mcp.sse_app())
 
 from fastapi.responses import RedirectResponse
 
-@app.get("/sse/")
-async def redirect_sse():
-    return RedirectResponse(url="/sse")
+@app.get("/sse")
+async def redirect_sse_no_slash():
+    return RedirectResponse(url="/sse/")
 
 if __name__ == "__main__":
     import uvicorn
