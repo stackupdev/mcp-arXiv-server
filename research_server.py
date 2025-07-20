@@ -30,8 +30,8 @@ def homepage():
 # Initialize FastMCP server (no port/app here)
 mcp = FastMCP("research")
 
-# Mount the MCP ASGI app at /sse
-app.mount("/sse", mcp.asgi_app)
+# Mount the MCP SSE ASGI app at /sse
+app.mount("/sse", mcp.sse_app)
 
 if __name__ == "__main__":
     import uvicorn

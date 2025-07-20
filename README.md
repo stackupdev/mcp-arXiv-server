@@ -1,63 +1,61 @@
 # MCP arXiv Server
 
-## Overview
-MCP arXiv Server is a backend service for searching, storing, and managing arXiv research paper metadata. It exposes a set of API endpoints compatible with the Model Context Protocol (MCP) and provides real-time communication via Server-Sent Events (SSE). The server is designed for deployment on Render.com as a containerized web service.
+A backend service for searching and managing arXiv research paper information, designed for easy deployment and integration. This project is suitable for both developers and users who want a reliable way to interact with arXiv data programmatically or via web endpoints.
 
-## Architecture
-- **Language:** Python 3.11+
-- **Frameworks:** FastAPI (for HTTP routes), FastMCP (for MCP protocol/SSE)
-- **Dependency Management:** [uv](https://github.com/astral-sh/uv) with `pyproject.toml` and `uv.lock`
-- **Containerization:** Dockerfile provided for reproducible builds
+## What is this project?
+This server lets you search for research papers on arXiv, organize results by topic, and access them through modern web APIs. It supports real-time updates via Server-Sent Events (SSE) and is compatible with the Model Context Protocol (MCP) for advanced integrations.
 
-## Features
-- Search arXiv for papers by topic (using the `arxiv` Python package)
-- Store and retrieve paper metadata in topic-based directories
-- Expose MCP-compatible tools for integration with MCP clients
-- Real-time updates and communication via `/sse` endpoint (SSE transport)
-- FastAPI-powered homepage at `/` for project info and documentation
+## How does it work?
+- **Built with Python 3.11+** for reliability and modern features.
+- **FastAPI** handles web/API routes (like the homepage and docs).
+- **FastMCP** provides the MCP protocol and SSE endpoint for real-time communication.
+- **Dependencies** are managed with `pyproject.toml` and locked for reproducibility with `uv.lock`.
+- **Dockerfile** makes deployment on platforms like Render.com simple and consistent.
 
-## API Endpoints
-- `GET /` — HTML homepage with project info
-- `GET /sse` — SSE endpoint for MCP protocol clients
-- **MCP Tools (auto-exposed):**
-  - `search_papers(topic: str, max_results: int = 5) -> List[str]`
-  - `extract_info(paper_id: str)`
-  - `get_available_folders()`
-  - `get_topic_papers(topic: str)`
-  - `generate_search_prompt(topic: str, num_papers: int = 5)`
+## Main Features
+- Search arXiv for papers by topic (using the official arxiv Python package)
+- Save and retrieve paper metadata in organized folders
+- Real-time updates and communication via `/sse` endpoint
+- Clear, friendly homepage at `/` for info and documentation
+- Exposes MCP-compatible tools for automation or integration
 
-## File Structure
+## API Endpoints (What can you call?)
+- `GET /` — Homepage with project info (HTML)
+- `GET /sse` — Real-time SSE endpoint for MCP clients
+- **MCP Tools (auto-exposed as API calls):**
+  - `search_papers(topic: str, max_results: int = 5)` — Search and store papers
+  - `extract_info(paper_id: str)` — Get info for a specific paper
+  - `get_available_folders()` — List all topic folders
+  - `get_topic_papers(topic: str)` — Get all papers for a topic
+  - `generate_search_prompt(topic: str, num_papers: int = 5)` — Generate a search prompt for AI tools
+
+## Project Structure (What's in the repo?)
 ```
 .
-├── Dockerfile
-├── LICENSE
-├── README.md
-├── main.py
-├── pyproject.toml
-├── research_server.py
-├── uv.lock
+├── Dockerfile         # Container build instructions
+├── LICENSE            # Project license (MIT)
+├── README.md          # This documentation file
+├── main.py            # Simple test script
+├── pyproject.toml     # Dependency definitions
+├── research_server.py # Main server code
+├── uv.lock            # Locked dependency versions
 ```
-- `research_server.py`: Main application entry point, defines FastAPI app and MCP tools
-- `pyproject.toml`/`uv.lock`: Dependency definitions and locking
-- `Dockerfile`: Build instructions for container deployment
-- `main.py`: Simple script for testing environment
-- `LICENSE`: [MIT License](./LICENSE)
 
-## Deployment (Render.com)
-1. **Push to GitHub:** Ensure your repository contains all project files, including Dockerfile and lock files.
-2. **Create Render.com Web Service:**
+## How to Deploy (on Render.com)
+1. **Push your code to GitHub** (include Dockerfile and all lock files).
+2. **Create a new Web Service on Render.com:**
    - Select your GitHub repo
-   - Render will detect and use the Dockerfile automatically
+   - Render will auto-detect the Dockerfile
    - Set the environment port to `8001`
-   - Deploy
-3. **Access:**
+   - Click Deploy
+3. **Access your service:**
    - Homepage: `https://<your-app-name>.onrender.com/`
    - SSE endpoint: `https://<your-app-name>.onrender.com/sse`
 
-## Dependency Management
-- All Python dependencies are listed in `pyproject.toml` and locked in `uv.lock`.
-- To update dependencies, use `uv pip install ...` and regenerate `uv.lock`.
-- FastAPI and FastMCP are required for API and protocol functionality.
+## Managing Dependencies
+- All dependencies are listed in `pyproject.toml` and locked in `uv.lock`.
+- To add or update dependencies, use `uv pip install ...` and regenerate `uv.lock`.
+- FastAPI and FastMCP are required for the API and SSE functionality.
 
 ## License
-This project is licensed under the [MIT License](./LICENSE) (c) 2025 The C Foundation.
+This project is licensed under the [MIT License](./LICENSE) © 2025 The C Foundation.
