@@ -3,11 +3,29 @@ import json
 import os
 from typing import List
 from mcp.server.fastmcp import FastMCP
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+
+# Create a FastAPI app for custom routes
+custom_app = FastAPI()
+
+@custom_app.get("/", response_class=HTMLResponse)
+def homepage():
+    return """
+    <html>
+        <head><title>MCP arXiv Server</title></head>
+        <body>
+            <h1>Welcome to the MCP arXiv Server!</h1>
+            <p>Use the MCP tools or the SSE endpoint for real-time arXiv research.</p>
+        </body>
+    </html>
+    """
+
 
 PAPER_DIR = "papers"
 
 # Initialize FastMCP server
-mcp = FastMCP("research", port=8001)
+mcp = FastMCP("research", port=8001, app=custom_app)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
