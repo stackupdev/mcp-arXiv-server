@@ -21,7 +21,7 @@ def homepage():
             <p>This is a backend API for arXiv search and paper management via the MCP protocol.</p>
             <ul>
                 <li>To connect via SSE, use the <code>/sse</code> endpoint.</li>
-                <li>See project documentation in <code>README.md</code> or contact the maintainer for more info.</li>
+                <li>See project documentation in <a href="https://github.com/stackupdev/mcp-arXiv-server/blob/main/README.md" target="_blank">README.md</a>.</li>
             </ul>
         </body>
     </html>
@@ -32,6 +32,12 @@ mcp = FastMCP("research")
 
 # Mount the MCP SSE ASGI app at /sse
 app.mount("/sse", mcp.sse_app())
+
+from fastapi.responses import RedirectResponse
+
+@app.get("/sse/")
+async def redirect_sse():
+    return RedirectResponse(url="/sse")
 
 if __name__ == "__main__":
     import uvicorn
