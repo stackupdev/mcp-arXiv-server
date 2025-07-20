@@ -5,7 +5,7 @@ A FastMCP-based backend service for searching, organizing, and managing arXiv re
 ## What is this project?
 This server provides programmatic access to arXiv papers through a set of MCP-compatible tools. It allows you to:
 - Search for papers on any topic
-- Store paper metadata locally
+- Temporarily store paper metadata (note: data may be lost on server restart)
 - Retrieve papers by topic or ID
 - Generate structured search prompts for AI assistance
 
@@ -21,7 +21,7 @@ This server provides programmatic access to arXiv papers through a set of MCP-co
 - **Metadata Management**: Automatically store and organize paper metadata by topic
 - **Topic-based Organization**: Easily browse papers by their research topics
 - **MCP Integration**: Exposes tools through the Model Context Protocol
-- **Simple Storage**: Uses JSON files for easy inspection and backup
+- **Temporary Storage**: Note that on Render.com's free tier, stored data may be lost when the server restarts
 
 ## Available MCP Tools
 
@@ -66,53 +66,89 @@ Generate a structured prompt for searching and analyzing papers.
         └── papers_info.json  # Paper metadata for the topic
 ```
 
-## Getting Started
+## Deployment on Render.com
 
 ### Prerequisites
-- Python 3.10 or higher
-- pip (Python package manager)
+- A GitHub account with access to the repository
+- A Render.com account (free tier available)
 
-### Installation
+### Deployment Steps
+
+1. **Push your code to GitHub**
+   - Make sure your code is pushed to a GitHub repository
+   - Include all necessary files: `research_server.py`, `pyproject.toml`, and `uv.lock`
+
+2. **Create a new Web Service on Render.com**
+   - Log in to your Render.com dashboard
+   - Click "New" and select "Web Service"
+   - Connect your GitHub account if you haven't already
+   - Select the repository containing this project
+
+3. **Configure the Web Service**
+   - **Name**: Choose a name for your service
+   - **Region**: Select the region closest to your users
+   - **Branch**: Select the branch to deploy (usually `main` or `master`)
+   - **Build Command**: `pip install -e .`
+   - **Start Command**: `python research_server.py`
+   - **Environment Variables**: No additional variables needed by default
+   - **Plan**: Select the free plan to start
+
+4. **Deploy**
+   - Click "Create Web Service"
+   - Render will automatically build and deploy your application
+   - The deployment process typically takes 2 5 minutes
+
+5. **Access Your Service**
+   - Once deployed, your MCP server will be available at: `https://your-service-name.onrender.com`
+   - The server exposes the MCP protocol on the root endpoint
+
+> **Important Note on Storage**: The free tier of Render.com uses ephemeral storage. This means any paper metadata stored will be lost when the server restarts. For persistent storage, consider upgrading to a paid plan with persistent storage or modifying the code to use an external database service.
+
+## Managing Dependencies
+
+## Development Notes
+
+### Local Development
+For development and testing, you can run the server locally where file storage will persist between restarts:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/stackupdev/mcp-arXiv-server.git
+   git clone https://github.com/your-username/mcp-arXiv-server.git
    cd mcp-arXiv-server
    ```
 
-2. Install dependencies using `uv` (recommended):
-   ```bash
-   uv pip install -e .
-   ```
-   Or using pip:
+2. Install dependencies:
    ```bash
    pip install -e .
    ```
 
-### Running the Server
+3. Run the server:
+   ```bash
+   python research_server.py
+   ```
 
-Start the server with:
-```bash
-python research_server.py
-```
-
-The server will start on port 8001 by default. You can now connect to it using any MCP-compatible client.
-
-## Managing Dependencies
-
+### Dependency Management
 Dependencies are managed using `pyproject.toml` and `uv.lock`:
 
-- To add a new dependency:
-  ```bash
-  uv pip install <package>
-  uv pip compile --output-file=uv.lock
-  ```
+1. **Add a new dependency**:
+   ```bash
+   uv pip install <package>
+   uv pip compile --output-file=uv.lock
+   git add pyproject.toml uv.lock
+   git commit -m "Add <package> dependency"
+   git push
+   ```
+   Render will automatically detect the changes and redeploy your service.
 
-- To update all dependencies:
-  ```bash
-  uv pip install --upgrade -e .
-  uv pip compile --upgrade --output-file=uv.lock
-  ```
+2. **Update dependencies**:
+   ```bash
+   uv pip install --upgrade -e .
+   uv pip compile --upgrade --output-file=uv.lock
+   git add pyproject.toml uv.lock
+   git commit -m "Update dependencies"
+   git push
+   ```
+   Again, Render will handle the deployment automatically.
 
 ## License
 
