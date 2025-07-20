@@ -1,42 +1,40 @@
 # Welcome to the MCP arXiv Server!
 
-This is an easy-to-use online tool that helps you search for and manage research papers from arXiv. You can use it to find papers on any topic and keep track of what you discover.
+This project helps you search for and organize research papers from arXiv with just a few clicks. It’s designed to be simple, friendly, and easy to use online.
 
-## What does this project do?
-- Lets you search arXiv for interesting research papers
-- Helps you organize and retrieve paper information
-- Works with tools that use the "MCP" protocol
-- Shows a simple welcome page when you visit the website
+## What does this site do?
+- Lets you search for research papers on any topic from arXiv.
+- Saves and organizes the papers you find, so you can look them up later.
+- Shows a friendly homepage when you visit the main website.
+- Works with special tools that use the "MCP" protocol for advanced users.
 
 ## How do I use it?
-You can run this project on [Render.com](https://render.com/), a service that makes it simple to put your project online.
+You can put this project online using [Render.com](https://render.com/):
+1. Upload your code to GitHub.
+2. On Render.com, create a new "Web Service" and connect your GitHub.
+3. Render.com will set everything up for you—just make sure the port is set to `8001`.
+4. When it’s ready, visit your new website link (like `https://your-app-name.onrender.com/`).
 
-### Steps to get started:
-1. **Put your project on GitHub.**
-   - If you haven't already, upload your code to a GitHub repository.
+## What will I see?
+- **Homepage (`/`)**: A welcome page that explains what the project does.
+- **/sse**: A special page for connecting with other tools (you can ignore this unless you know you need it).
 
-2. **Set up on Render.com:**
-   - Go to the Render.com website and log in.
-   - Click "New Web Service" and connect your GitHub account.
-   - Choose your project repository.
-   - You don't need to change any build settings—Render will use the included Dockerfile.
-   - Make sure the port is set to `8001`.
-   - Click "Create Web Service" and wait for your site to go live!
+## What happens when I search for papers?
+When you use the search feature (through the MCP protocol or connected tools), the server will:
+- Look up the latest papers from arXiv on your chosen topic
+- Save the results so you can find them again later
+- Let you view info about each paper, like title, authors, summary, and download link
 
-3. **Visit your new site:**
-   - Once it's ready, go to the link Render.com gives you (it will look like `https://your-app-name.onrender.com/`).
-   - The homepage will greet you and tell you about the project.
-   - The special `/sse` page is for connecting with other tools (you don't need to use this unless you know what MCP is).
+## Project files
+- `research_server.py`: The main code that runs the server
+- `pyproject.toml` and `uv.lock`: These keep track of which packages are needed
+- `README.md`: This guide
 
 ## Need help?
-If you have any questions or need help, check with the person who shared this project or look at the code for more details.
+If you’re stuck or have questions, ask the person who shared this project with you, or check the code for more details.
 
-## Files in this project
-- `research_server.py`: The main code for the server
-- `pyproject.toml`, `uv.lock`: These help manage which packages the project needs
-- `README.md`: This file!
+---
 
-## License
-MIT (or add your own license)
+Enjoy exploring research papers with MCP arXiv Server!
 ## License
 MIT (or specify your license)
