@@ -20,7 +20,7 @@ def homepage():
             <h1>Welcome to the MCP arXiv Server!</h1>
             <p>This is a backend API for arXiv search and paper management via the MCP protocol.</p>
             <ul>
-                <li>To connect via SSE, use the <code>/sse</code> endpoint.</li>
+                <li>To connect via SSE, use the <a href="/sse/">/sse endpoint</a>.</li>
                 <li>See project documentation in <a href="https://github.com/stackupdev/mcp-arXiv-server/blob/main/README.md" target="_blank">README.md</a>.</li>
             </ul>
         </body>
