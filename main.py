@@ -1,5 +1,5 @@
 def main():
-    print("Hello from mcp-porject!")
+    print("Hello from mcp-arXiv-server!")
 
 
 if __name__ == "__main__":
