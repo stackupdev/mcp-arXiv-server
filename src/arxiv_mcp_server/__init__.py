@@ -3,7 +3,6 @@ Arxiv MCP Server initialization
 """
 
 from . import server
-from . import sse_server
 import asyncio
 import sys
 
@@ -15,6 +14,13 @@ def main():
 
 def main_sse():
     """Main entry point for SSE-enabled HTTP server."""
+    try:
+        from . import sse_server
+    except ImportError as e:
+        print(f"Error: SSE server dependencies not available: {e}")
+        print("Please install FastAPI dependencies: pip install fastapi uvicorn sse-starlette")
+        sys.exit(1)
+    
     # Parse command line arguments for host and port
     host = "0.0.0.0"
     port = 8000
@@ -36,4 +42,4 @@ def main_sse():
     sse_server.run_sse_server(host, port)
 
 
-__all__ = ["main", "main_sse", "server", "sse_server"]
+__all__ = ["main", "main_sse", "server"]
