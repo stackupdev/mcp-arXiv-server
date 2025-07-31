@@ -38,5 +38,8 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Configure logging to show output
 ENV PYTHONUNBUFFERED=1
 
-# Set the default entrypoint
-ENTRYPOINT ["python", "-m", "arxiv_mcp_server"]
+# Set the default entrypoint to run SSE server for web deployment
+ENTRYPOINT ["python", "-m", "arxiv_mcp_server.sse_server"]
+
+# Expose the default port
+EXPOSE 8000
