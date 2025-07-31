@@ -80,15 +80,16 @@ Generate a structured research prompt for AI-assisted paper analysis.
 
 ### Key Files
 
-- **`research_server.py`**: Main server implementation using FastMCP framework
+- **`main.py`**: Application entry point
+  - Handles server startup and shutdown
+  - Provides user-friendly messages and error handling
+  - Imports and runs the FastMCP server from `research_server.py`
+
+- **`research_server.py`**: Server implementation using FastMCP framework
   - Defines all MCP tools, resources, and prompts
   - Handles arXiv API integration
   - Manages local file storage
-  - Runs on port 8001 with SSE transport
-
-- **`main.py`**: Simple placeholder entry point
-  - Currently contains basic "Hello" message
-  - Can be extended for additional functionality
+  - Exports the `mcp` server instance for use by `main.py`
 
 - **`pyproject.toml`**: Project configuration
   - Minimal dependencies: `arxiv>=2.2.0` and `mcp>=1.7.1`
@@ -116,7 +117,7 @@ Generate a structured research prompt for AI-assisted paper analysis.
 
 3. **Run the server**:
    ```bash
-   python research_server.py
+   python main.py
    ```
 
    The server will start on `http://localhost:8001` with SSE transport enabled.
@@ -135,32 +136,51 @@ The project has minimal dependencies as defined in `pyproject.toml`:
 - **Persistence**: Data persists between server restarts when running locally
 - **Format**: Structured JSON with paper titles, authors, summaries, PDF URLs, and publication dates
 
-## Usage Examples
+## How to Use the MCP Server
 
-### Searching for Papers
-```python
-# Search for machine learning papers
-result = search_papers("machine learning", max_results=5)
-# Returns: ['2301.12345', '2302.67890', ...]
+This is an MCP (Model Context Protocol) server that provides tools, resources, and prompts to AI assistants like Claude. Here's how it works:
+
+### 1. Start the Server
+```bash
+python main.py
 ```
+The server will start on `http://localhost:8001` and be ready to receive MCP requests.
 
-### Retrieving Paper Information
-```python
-# Get details for a specific paper
-info = extract_info("2301.12345")
-# Returns: JSON string with paper metadata
-```
+### 2. Connect an MCP Client
+The server exposes its functionality through the MCP protocol. AI assistants or MCP clients can connect to use the tools.
 
-### Browsing Topics
-```python
-# List all available topics
-folders = get_available_folders()
-# Returns: Markdown list of topic directories
+### 3. Available Functionality
 
-# Get all papers in a topic
-papers = get_topic_papers("machine_learning")
-# Returns: Detailed markdown with all papers in the topic
-```
+#### **MCP Tools** (called by AI assistants)
+- `search_papers(topic, max_results)` - Search and store papers on a topic
+- `extract_info(paper_id)` - Get details about a specific paper
+
+#### **MCP Resources** (accessed via URI)
+- `papers://folders` - Browse all available topic folders
+- `papers://machine_learning` - View all papers in the "machine learning" topic
+- `papers://quantum_computing` - View all papers in the "quantum computing" topic
+
+#### **MCP Prompts** (generate research instructions)
+- `generate_search_prompt(topic, num_papers)` - Create structured research prompts
+
+### 4. Example Workflow
+1. **Search**: AI assistant calls `search_papers("quantum computing", 10)`
+2. **Store**: Papers are automatically saved to `papers/quantum_computing/papers_info.json`
+3. **Browse**: Access `papers://quantum_computing` resource to view all papers
+4. **Retrieve**: Use `extract_info("2301.12345")` to get specific paper details
+
+### 5. Data Storage
+- Papers are organized in topic-based directories under `papers/`
+- Each topic has a `papers_info.json` file with metadata
+- Data persists between server restarts
+
+## Integration with AI Assistants
+
+This MCP server is designed to work with AI assistants that support the Model Context Protocol. When connected:
+
+- **Tools**: The AI can search for papers and retrieve information
+- **Resources**: The AI can browse your saved research topics and papers
+- **Prompts**: The AI can generate structured research workflows
 
 ## License
 

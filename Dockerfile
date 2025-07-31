@@ -3,6 +3,6 @@ WORKDIR /app
 RUN pip install uv
 COPY pyproject.toml uv.lock ./
 RUN uv pip install --system .
-COPY research_server.py .
+COPY main.py research_server.py ./
 EXPOSE 8001
-CMD ["uv", "run", "research_server.py"]
+CMD ["python", "main.py"]
