@@ -1,7 +1,7 @@
 [project]
 name = "mcp-arXiv-server"
 version = "0.1.0"
-description = "A FastAPI-based research server providing arXiv paper search, topic-based paper management, and real-time SSE/REST API endpoints. Implements MCP tools to search, organize, and retrieve academic papers by topic, expose research data via HTTP/SSE, and support integration with agents and web clients."
+description = "A FastMCP-based research server providing arXiv paper search, topic-based paper management, and real-time SSE/REST API endpoints. Implements MCP tools to search, organize, and retrieve academic papers by topic, expose research data via HTTP/SSE, and support integration with agents and web clients."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
