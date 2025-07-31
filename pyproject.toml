@@ -1,7 +1,7 @@
 [project]
-name = "mcp-project"
+name = "mcp-arXiv-server"
 version = "0.1.0"
-description = "Add your description here"
+description = "arXiv server for MCP"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
