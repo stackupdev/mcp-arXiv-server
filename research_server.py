@@ -188,5 +188,6 @@ def generate_search_prompt(topic: str, num_papers: int = 10) -> str:
     
     Please present both detailed information about each paper and a high-level synthesis of the research landscape in {topic}."""
 
-# Server startup is handled by main.py
-# This module only defines the MCP server and its tools/resources/prompts
+if __name__ == "__main__":
+    # Initialize and run the server
+    mcp.run(transport='sse')

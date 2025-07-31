@@ -80,16 +80,15 @@ Generate a structured research prompt for AI-assisted paper analysis.
 
 ### Key Files
 
-- **`main.py`**: Application entry point
-  - Handles server startup and shutdown
-  - Provides user-friendly messages and error handling
-  - Imports and runs the FastMCP server from `research_server.py`
-
-- **`research_server.py`**: Server implementation using FastMCP framework
+- **`research_server.py`**: Main server implementation using FastMCP framework
   - Defines all MCP tools, resources, and prompts
   - Handles arXiv API integration
   - Manages local file storage
-  - Exports the `mcp` server instance for use by `main.py`
+  - Runs on port 8001 with SSE transport
+
+- **`main.py`**: Simple placeholder entry point
+  - Currently contains basic "Hello" message
+  - Can be extended for additional functionality
 
 - **`pyproject.toml`**: Project configuration
   - Minimal dependencies: `arxiv>=2.2.0` and `mcp>=1.7.1`
@@ -117,7 +116,7 @@ Generate a structured research prompt for AI-assisted paper analysis.
 
 3. **Run the server**:
    ```bash
-   python main.py
+   python research_server.py
    ```
 
    The server will start on `http://localhost:8001` with SSE transport enabled.
@@ -142,7 +141,7 @@ This is an MCP (Model Context Protocol) server that provides tools, resources, a
 
 ### 1. Start the Server
 ```bash
-python main.py
+python research_server.py
 ```
 The server will start on `http://localhost:8001` and be ready to receive MCP requests.
 
