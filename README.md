@@ -1,42 +1,133 @@
 # MCP arXiv Server
 
-A FastMCP-based backend service for searching, organizing, and managing arXiv research papers. This project provides a simple interface to search for academic papers, store their metadata, and retrieve them by topic or paper ID.
+A FastAPI-based research backend for searching, organizing, and managing arXiv research papers. Provides both HTTP/SSE (Server-Sent Events) and MCP protocol interfaces for real-time, programmatic access to academic papers. Includes Docker support for easy deployment.
 
-## What is this project?
-This server provides programmatic access to arXiv papers through a set of MCP-compatible tools. It allows you to:
-- Search for papers on any topic
-- Temporarily store paper metadata (note: data may be lost on server restart)
-- Retrieve papers by topic or ID
-- Generate structured search prompts for AI assistance
+---
 
-## How does it work?
-- Built with **Python 3.10+** for reliability and modern features
-- Uses the official **arxiv** Python package for searching arXiv
-- **FastMCP** provides the MCP protocol and web interface
-- Dependencies are managed with `pyproject.toml` and locked with `uv.lock`
-- Paper metadata is stored in JSON files organized by topic
+## Project Overview
 
-## Main Features
-- **Paper Search**: Search arXiv for papers by topic with customizable result limits
-- **Metadata Management**: Automatically store and organize paper metadata by topic
-- **Topic-based Organization**: Easily browse papers by their research topics
-- **MCP Integration**: Exposes tools through the Model Context Protocol
-- **Temporary Storage**: Note that on Render.com's free tier, stored data may be lost when the server restarts
+This project exposes a modern, agent-ready server for interacting with arXiv:
+- **arXiv Paper Search**: Find and organize academic papers by topic.
+- **Topic-based Paper Management**: Store and retrieve paper metadata in structured folders.
+- **Real-time API**: Access search results and paper data via REST or SSE endpoints.
+- **MCP Protocol Integration**: Use with agents and tools supporting the Model Context Protocol.
 
-## Available MCP Tools
+---
 
-The server exposes the following tools through the MCP protocol:
+## Features
+- **Search arXiv** by research topic with customizable result limits.
+- **Store & Organize** paper metadata by topic (JSON format).
+- **Retrieve** papers by topic or paper ID.
+- **List available topics** and papers per topic.
+- **Generate prompts** for AI/LLM research assistance.
+- **Real-time updates** via SSE event stream (`/events`).
+- **CORS support** for web clients.
+- **Dockerized** for reproducible deployment.
 
-### `search_papers(topic: str, max_results: int = 5) -> List[str]`
-Search arXiv for papers on a specific topic and store their metadata.
-- `topic`: The research topic to search for
-- `max_results`: Maximum number of results to return (default: 5)
-- Returns: List of paper IDs found in the search
+---
 
-### `extract_info(paper_id: str) -> str`
-Retrieve information about a specific paper by its ID.
-- `paper_id`: The arXiv paper ID to look up
-- Returns: JSON string with paper details or error message
+## Architecture & Key Files
+- `research_server.py`: Main FastAPI-based server. Implements all endpoints, SSE, and MCP tools.
+- `main.py`: Simple entry point (prints a hello message; not used for server startup).
+- `Dockerfile`: Containerizes the server for production use.
+- `pyproject.toml`: Project metadata and dependencies.
+
+---
+
+## HTTP & SSE Endpoints
+
+- `POST /search` — Search for papers by topic.
+- `GET /list` — List all available topic folders.
+- `GET /read` — Retrieve paper info by ID.
+- `GET /topic/{topic}` — Get all papers for a topic.
+- `GET /events` — Real-time SSE event stream for updates.
+
+---
+
+## MCP Tools
+
+- `search_papers(topic: str, max_results: int = 10) -> List[str]`  
+  Search arXiv for papers and store their metadata by topic.
+
+- `extract_info(paper_id: str) -> str`  
+  Retrieve metadata for a specific paper by arXiv ID.
+
+- `get_available_folders() -> List[str]`  
+  List all topic folders (research areas).
+
+- `get_topic_papers(topic: str) -> List[dict]`  
+  Get paper metadata for a given topic.
+
+- `generate_search_prompt(topic: str, num_papers: int = 10) -> str`  
+  Generate a prompt for LLMs to find and discuss papers on a topic.
+
+---
+
+## Setup & Installation
+
+### Requirements
+- Python 3.10+
+- [uv](https://github.com/astral-sh/uv) (for dependency management)
+- Docker (optional, for containerized deployment)
+
+### Local Setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/mcp-arXiv-server.git
+   cd mcp-arXiv-server
+   ```
+2. Install dependencies:
+   ```bash
+   pip install uv
+   uv pip install --system .
+   ```
+3. Run the server:
+   ```bash
+   uv run research_server.py
+   ```
+   The server will start on `http://localhost:8001` by default.
+
+### Docker Deployment
+1. Build and run the Docker container:
+   ```bash
+   docker build -t mcp-arxiv-server .
+   docker run -p 8001:8001 mcp-arxiv-server
+   ```
+2. Access the API at `http://localhost:8001`.
+
+---
+
+## Usage Examples
+
+### Search for Papers (HTTP)
+```bash
+curl -X POST http://localhost:8001/search -H "Content-Type: application/json" -d '{"topic": "quantum computing", "max_results": 5}'
+```
+
+### Receive Real-time Updates (SSE)
+Connect to `http://localhost:8001/events` with an SSE-capable client.
+
+### Use with MCP-compatible Agents
+Configure your agent to connect to the MCP server at `http://localhost:8001`.
+
+---
+
+## Limitations & Notes
+- **Temporary Storage**: Paper metadata is stored locally in JSON files. Data may be lost if the server or container is restarted.
+- **No full-text downloads**: Only metadata is stored, not full PDFs.
+- **arXiv API rate limits** may apply for excessive queries.
+
+---
+
+## Credits
+- Built with [FastAPI](https://fastapi.tiangolo.com/), [arxiv](https://github.com/lukasschwab/arxiv.py), and [MCP](https://github.com/stackupdev/mcp).
+- Dockerized for reproducibility.
+
+## License
+MIT License. See `LICENSE` file for details.
+
+## Contributions
+Pull requests and issues are welcome!
 
 ### `get_available_folders() -> str`
 List all available topic folders containing saved papers.
